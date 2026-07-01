@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Merriweather:wght@400;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary-50: #fef7ee;
+  --color-primary-100: #fdecd3;
+  --color-primary-200: #fbd8a5;
+  --color-primary-300: #f8bc6d;
+  --color-primary-400: #f39a3a;
+  --color-primary-500: #ee8118;
+  --color-primary-600: #df6a12;
+  --color-primary-700: #b95211;
+  --color-primary-800: #934114;
+  --color-primary-900: #783613;
+  --color-primary-950: #401b08;
+
+  --color-secondary-50: #faf5f0;
+  --color-secondary-100: #f3e8dc;
+  --color-secondary-200: #e5d0bc;
+  --color-secondary-300: #d4b394;
+  --color-secondary-400: #c3946d;
+  --color-secondary-500: #b57b4f;
+  --color-secondary-600: #a66843;
+  --color-secondary-700: #8b5439;
+  --color-secondary-800: #714631;
+  --color-secondary-900: #5d3b2a;
+  --color-secondary-950: #311e16;
+
+  --color-accent-50: #fef3f2;
+  --color-accent-100: #fee4e1;
+  --color-accent-200: #fcc9c4;
+  --color-accent-300: #f9a39b;
+  --color-accent-400: #f37266;
+  --color-accent-500: #ea4d3d;
+  --color-accent-600: #d73426;
+  --color-accent-700: #b3281e;
+  --color-accent-800: #92241c;
+  --color-accent-900: #78221c;
+  --color-accent-950: #420c0a;
+
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Lato', sans-serif;
+  --font-accent: 'Merriweather', serif;
+
+  --bg-primary: #fffbf7;
+  --bg-secondary: #f8f4f0;
+  --bg-card: #ffffff;
+  --text-primary: #2d2418;
+  --text-secondary: #5d4a3a;
+  --text-muted: #8b7560;
+  --border-color: #e5ddd4;
+}
+
+.dark {
+  --bg-primary: #1a1410;
+  --bg-secondary: #251e18;
+  --bg-card: #2d241c;
+  --text-primary: #faf5f0;
+  --text-secondary: #d4c4b0;
+  --text-muted: #a08b78;
+  --border-color: #4a3d30;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+.font-accent {
+  font-family: var(--font-accent);
+}
+
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-card {
+  background-color: var(--bg-card);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.border-theme {
+  border-color: var(--border-color);
+}

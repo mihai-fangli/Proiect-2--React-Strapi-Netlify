@@ -24,5 +24,9 @@ export const getArticleBySlug = async (slug) => {
   const response = await strapiApi.get(`/api/articles?filters[slug][$eq]=slug&populate=*`);
   return response.data;
 };
+export const getCategories = async () => {
+  const response = await strapiApi.get('/api/categories?populate=*');
+  return response.data;
+};
 
 export default strapiApi;

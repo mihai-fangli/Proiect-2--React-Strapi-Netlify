@@ -1,28 +1,32 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, UtensilsCrossed, Heart, Users } from 'lucide-react';
-import { getArticles } from '../api/strapi';
+import { getArticles, getCategories } from '../api/strapi';
 import ArticleCard from '../components/ArticleCard';
 
 function Home() {
   const [articles, setArticles] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchArticles = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getArticles();
-        setArticles(data.data || []);
+        const [articlesData, categoriesData] = await Promise.all([
+          getArticles(),
+          getCategories(),
+        ]);
+        setArticles(articlesData.data || []);
+        setCategories(categoriesData.data || []);
       } catch (err) {
-        setError('Nu am putut încărca articolele');
+        setError('Nu am putut încărca datele');
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchArticles();
+    fetchData();
   }, []);
 
   const features = [
@@ -45,6 +49,7 @@ function Home() {
 
   return (
     <div className="min-h-screen">
+      {/* Hero */}
       <section className="relative h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -53,7 +58,6 @@ function Home() {
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
-
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <span className="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white/90 text-sm font-medium mb-6">
             Din inima Timișoarei
@@ -72,7 +76,6 @@ function Home() {
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
-
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
           <div className="w-6 h-10 rounded-full border-2 border-white/40 flex items-start justify-center pt-2">
             <div className="w-1.5 h-3 bg-white/60 rounded-full" />
@@ -80,6 +83,7 @@ function Home() {
         </div>
       </section>
 
+      {/* Despre noi */}
       <section className="py-20 px-4 bg-[var(--bg-primary)]">
         <div className="max-w-6xl mx-auto text-center">
           <span className="text-[var(--color-primary-500)] font-medium text-sm uppercase tracking-wider">
@@ -89,9 +93,8 @@ function Home() {
             Mai mult decât mâncare
           </h2>
           <p className="text-[var(--text-secondary)] text-lg max-w-3xl mx-auto leading-relaxed mb-12">
-            La Bunica nu este doar un restaurant, ci o călătorie în tradiția culinară românească. Fiecare preparat este o poveste, fiecare gust o amintire din copilărie, pregătită cu dragoste și respect pentru rețetele străbune.
+            La Bunica nu este doar un restaurant, ci o călătorie în tradiția culinară românească.
           </p>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
             {features.map(({ icon: Icon, title, description }) => (
               <div
@@ -101,19 +104,51 @@ function Home() {
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--color-primary-100)] to-[var(--color-primary-200)] flex items-center justify-center mx-auto mb-5">
                   <Icon className="w-7 h-7 text-[var(--color-primary-600)]" />
                 </div>
-                <h3 className="font-display text-xl font-semibold text-[var(--text-primary)] mb-3">
-                  {title}
-                </h3>
-                <p className="text-[var(--text-muted)] text-sm leading-relaxed">
-                  {description}
-                </p>
+                <h3 className="font-display text-xl font-semibold text-[var(--text-primary)] mb-3">{title}</h3>
+                <p className="text-[var(--text-muted)] text-sm leading-relaxed">{description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Categorii */}
       <section className="py-20 px-4 bg-[var(--bg-secondary)]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-[var(--color-primary-500)] font-medium text-sm uppercase tracking-wider">
+              Explorează
+            </span>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--text-primary)] mt-3">
+              Categorii
+            </h2>
+          </div>
+          {categories.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {categories.map((category) => (
+                <Link
+                  key={category.id}
+                  to="/articles"
+                  className="bg-[var(--bg-card)] rounded-2xl p-6 border border-[var(--border-color)] hover:shadow-xl hover:border-[var(--color-primary-300)] transition-all duration-300 text-center group"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--color-primary-100)] to-[var(--color-primary-200)] flex items-center justify-center mx-auto mb-4">
+                    <UtensilsCrossed className="w-6 h-6 text-[var(--color-primary-600)]" />
+                  </div>
+                  <h3 className="font-display text-lg font-semibold text-[var(--text-primary)] mb-2 group-hover:text-[var(--color-primary-500)] transition-colors">
+                    {category.attributes?.name || category.name}
+                  </h3>
+                  <p className="text-[var(--text-muted)] text-sm">
+                    {category.attributes?.description || category.description}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Articole */}
+      <section className="py-20 px-4 bg-[var(--bg-primary)]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-[var(--color-primary-500)] font-medium text-sm uppercase tracking-wider">
@@ -123,22 +158,16 @@ function Home() {
               Ultimele articole
             </h2>
           </div>
-
           {loading && (
             <div className="flex justify-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-4 border-[var(--color-primary-200)] border-t-[var(--color-primary-500)]" />
             </div>
           )}
-
           {error && (
             <div className="text-center py-20">
               <p className="text-red-500">{error}</p>
-              <Link to="/articles" className="mt-4 inline-flex items-center gap-2 text-[var(--color-primary-500)]">
-                Vezi toate articolele <ArrowRight className="w-4 h-4" />
-              </Link>
             </div>
           )}
-
           {!loading && !error && articles.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {articles.slice(0, 3).map((article) => (
@@ -146,27 +175,19 @@ function Home() {
               ))}
             </div>
           )}
-
-          {!loading && !error && articles.length === 0 && (
-            <div className="text-center py-20 bg-[var(--bg-card)] rounded-2xl border border-[var(--border-color)]">
-              <p className="text-[var(--text-muted)]">Nu există articole momentan.</p>
-            </div>
-          )}
-
-          {articles.length > 3 && (
-            <div className="text-center mt-12">
-              <Link
-                to="/articles"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] text-white font-semibold rounded-full transition-colors duration-200"
-              >
-                Vezi toate articolele
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          )}
+          <div className="text-center mt-12">
+            <Link
+              to="/articles"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] text-white font-semibold rounded-full transition-colors duration-200"
+            >
+              Vezi toate articolele
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </section>
 
+      {/* Rezervări */}
       <section className="py-20 px-4 bg-[var(--bg-card)]">
         <div className="max-w-4xl mx-auto text-center">
           <span className="text-[var(--color-primary-500)] font-medium text-sm uppercase tracking-wider">
@@ -176,7 +197,7 @@ function Home() {
             Rezervă o masă
           </h2>
           <p className="text-[var(--text-secondary)] text-lg mb-10 max-w-2xl mx-auto">
-            Pentru o experiență de neuitat, rezervă din timp locul tău la mesele noastre. Te așteptăm cu drag!
+            Pentru o experiență de neuitat, rezervă din timp locul tău la mesele noastre.
           </p>
           <Link
             to="/contact"
